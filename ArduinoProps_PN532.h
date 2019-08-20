@@ -9,6 +9,6 @@ enum rfid_errno {
 	RFID_ERRNO__INIT,
 };
 
-enum rfid_errno initializeRadio(PN532 *);
+enum rfid_errno initializeRFID(PN532 *);
 
 #endif // ARDUINOPROPS_PN532_H
