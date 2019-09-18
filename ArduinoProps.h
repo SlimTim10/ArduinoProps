@@ -3,8 +3,6 @@
 
 #include <stdint.h>
 
-#define die()	while (1)
-
 struct propInfo {
 	uint8_t id;
 	uint8_t kind;
