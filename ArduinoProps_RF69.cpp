@@ -1,6 +1,7 @@
 #include "ArduinoProps.h"
 #include "ArduinoProps_config.h"
 #include "ArduinoProps_RF69.h"
+#include "private.h"
 #include <RH_RF69.h>
 
 enum rf_settings {
@@ -25,10 +26,7 @@ enum radio_errno initializeRadio(RH_RF69 *radio) {
 	
 	radio->setTxPower(RF_POWER);
 
-	uint8_t key[] = {
-		0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-		0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 0x10
-	};
+	extern uint8_t key[];
 	radio->setEncryptionKey(key);
 
 	radio->setModemConfig((RH_RF69::ModemConfigChoice) RF_MODEM_CONFIG);
