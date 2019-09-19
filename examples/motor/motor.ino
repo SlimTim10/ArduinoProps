@@ -78,10 +78,10 @@ void toggleMotor(void) {
 }
 
 enum commands parsePacket(uint8_t *packet) {
-	if (matchPacket(prop, packet, pingPayload, pingPayloadLength)) {
+	if (matchPayload(prop, packet, pingPayload, pingPayloadLength)) {
 		return CMD_PING;
 	}
-	if (matchPacket(prop, packet, motorPayload, motorPayloadLength)) {
+	if (matchPayload(prop, packet, motorPayload, motorPayloadLength)) {
 		return CMD_TOGGLE_MOTOR;
 	}
 	return CMD_NONE;

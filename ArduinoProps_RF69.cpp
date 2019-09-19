@@ -39,7 +39,7 @@ enum radio_errno initializeRadio(RH_RF69 *radio) {
 	return RADIO_ERRNO__SUCCESS;
 }
 
-bool matchPacket(struct propInfo *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
+bool matchPayload(struct propInfo *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
 	uint8_t header[] = { prop->id, prop->kind, payloadLength, HDR_RESERVED };
 	uint8_t headerLength = sizeof(header);
 	uint8_t packet[PACKET_MAX_LENGTH];
@@ -48,6 +48,10 @@ bool matchPacket(struct propInfo *prop, uint8_t *recvPacket, uint8_t *payload, u
 	memcpy(packet, header, headerLength);
 	memcpy(&packet[headerLength], payload, payloadLength);
 
+	return (memcmp(recvPacket, packet, packetLength) == 0);
+}
+
+bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
 	return (memcmp(recvPacket, packet, packetLength) == 0);
 }
 

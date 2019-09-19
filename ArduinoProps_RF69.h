@@ -10,7 +10,8 @@ enum radio_errno {
 };
 
 enum radio_errno initializeRadio(RH_RF69 *);
-bool matchPacket(struct propInfo *, uint8_t *, uint8_t *, uint8_t);
+bool matchPayload(struct propInfo *, uint8_t *, uint8_t *, uint8_t);
+bool matchPacket(uint8_t *, uint8_t *, uint8_t);
 void sendPayload(RH_RF69 *, struct propInfo *, uint8_t *, uint8_t);
 void sendPacket(RH_RF69 *, uint8_t *, uint8_t);
 
