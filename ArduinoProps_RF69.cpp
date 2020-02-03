@@ -40,14 +40,14 @@ enum radio_errno initializeRadio(RH_RF69 *radio) {
 }
 
 static uint8_t *makePacket(Prop *prop, uint8_t *payload, uint8_t payloadLength) {
-	Header header = { prop->id, payloadLength };
+	Header header = { prop->address, payloadLength };
 	size_t headerLength = sizeof(header);
 	
 	uint8_t packet[PACKET_MAX_LENGTH];
 	uint8_t packetLength = headerLength + payloadLength;
 
-	size_t m = sizeof(header.id), n = sizeof(header.payloadLength);
-	memcpy(packet, &header.id, m);
+	size_t m = sizeof(header.address), n = sizeof(header.payloadLength);
+	memcpy(packet, &header.address, m);
 	memcpy(&packet[m], &header.payloadLength, n);
 	memcpy(&packet[headerLength], payload, payloadLength);
 

@@ -4,11 +4,11 @@
 #include <stdint.h>
 
 typedef struct {
-	uint32_t id;
+	uint32_t address;
 } Prop;
 
 typedef struct {
-	uint32_t id;
+	uint32_t address;
 	uint8_t payloadLength;
 } Header;
 
