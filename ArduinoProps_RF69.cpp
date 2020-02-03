@@ -1,7 +1,7 @@
 #include "ArduinoProps.h"
 #include "ArduinoProps_config.h"
 #include "ArduinoProps_RF69.h"
-#include "private.h"
+#include "ArduinoProps_RF69_private.h"
 #include <RH_RF69.h>
 
 enum rf_settings {
@@ -39,15 +39,25 @@ enum radio_errno initializeRadio(RH_RF69 *radio) {
 	return RADIO_ERRNO__SUCCESS;
 }
 
-bool matchPayload(struct propInfo *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
-	uint8_t header[] = { prop->id, prop->kind, payloadLength, HDR_RESERVED };
-	uint8_t headerLength = sizeof(header);
+static uint8_t *makePacket(Prop *prop, uint8_t *payload, uint8_t payloadLength) {
+	Header header = { prop->id, payloadLength };
+	size_t headerLength = sizeof(header);
+	
 	uint8_t packet[PACKET_MAX_LENGTH];
 	uint8_t packetLength = headerLength + payloadLength;
 
-	memcpy(packet, header, headerLength);
+	size_t m = sizeof(header.id), n = sizeof(header.payloadLength);
+	memcpy(packet, &header.id, m);
+	memcpy(&packet[m], &header.payloadLength, n);
 	memcpy(&packet[headerLength], payload, payloadLength);
 
+	return packet;
+}
+
+bool matchPayload(Prop *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
+	uint8_t *packet = makePacket(prop, payload, payloadLength);
+	uint8_t packetLength = sizeof(Header) + payloadLength;
+	
 	return (memcmp(recvPacket, packet, packetLength) == 0);
 }
 
@@ -55,14 +65,9 @@ bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
 	return (memcmp(recvPacket, packet, packetLength) == 0);
 }
 
-void sendPayload(RH_RF69 *radio, struct propInfo *prop, uint8_t *payload, uint8_t payloadLength) {
-	uint8_t header[] = { prop->id, prop->kind, payloadLength, HDR_RESERVED };
-	uint8_t headerLength = sizeof(header);
-	uint8_t packet[PACKET_MAX_LENGTH];
-	uint8_t packetLength = headerLength + payloadLength;
-
-	memcpy(packet, header, headerLength);
-	memcpy(&packet[headerLength], payload, payloadLength);
+void sendPayload(RH_RF69 *radio, Prop *prop, uint8_t *payload, uint8_t payloadLength) {
+	uint8_t *packet = makePacket(prop, payload, payloadLength);
+	uint8_t packetLength = sizeof(Header) + payloadLength;
 	
 	radio->send(packet, packetLength);
 	radio->waitPacketSent();
