@@ -6,6 +6,7 @@ Name folder "ArduinoProps" in Arduino/libraries.
 
 - [RadioHead](https://github.com/SlimTim10/RadioHead)
 - [NFC Library](https://github.com/Seeed-Studio/PN532)
+- [MaybeC](https://github.com/SlimTim10/MaybeC)
 
 ## Usage
 
