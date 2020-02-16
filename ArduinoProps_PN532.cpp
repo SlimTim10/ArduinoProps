@@ -23,7 +23,7 @@ void initializeRFIDs(PN532 **rfids, uint8_t n, uint8_t initAttempts) {
 	}
 }
 
-/* (PN532, uint8_t) -> maybe uint8_t[MIFAREULTRALIGHT_PAGE_SIZE] */
+/* (PN532, uint8_t) -> maybe uint8_t */
 maybe readTag(PN532 *rfid_, uint8_t attempts) {
 	PN532 *rfid = (PN532 *) rfid_;
 	
@@ -33,20 +33,9 @@ maybe readTag(PN532 *rfid_, uint8_t attempts) {
 		if (rfid->readPassiveTargetID(PN532_MIFARE_ISO14443A, val, &uidLength)) {
 			static uint8_t tagData[MIFAREULTRALIGHT_PAGE_SIZE];
 			if (rfid->mifareultralight_ReadPage(MIFAREULTRALIGHT_USER_PAGE1, tagData)) {
-				return mreturn(&tagData);
+				return mreturn(&tagData[0]);
 			}
 		}
 	}
-	return nothing();
-}
-
-/* uint8_t[MIFAREULTRALIGHT_PAGE_SIZE] -> maybe void */
-maybe printData(void *data_) {
-	uint8_t *data = (uint8_t *) data_;
-	PN532_SPI pn532spi(SPI, 10);
-	PN532 rfid(pn532spi);
-
-	rfid.PrintHexChar(data, MIFAREULTRALIGHT_PAGE_SIZE);
-	
 	return nothing();
 }

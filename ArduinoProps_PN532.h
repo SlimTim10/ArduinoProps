@@ -19,9 +19,7 @@ enum {
 
 enum rfid_errno initializeRFID(PN532 *);
 void initializeRFIDs(PN532 **, uint8_t, uint8_t);
-/* (PN532, uint8_t) -> maybe uint8_t[MIFAREULTRALIGHT_PAGE_SIZE] */
+/* (PN532, uint8_t) -> maybe uint8_t */
 maybe readTag(PN532 *, uint8_t);
-/* uint8_t[] -> maybe void */
-maybe printData(void *);
 
 #endif // ARDUINOPROPS_PN532_H
