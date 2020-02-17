@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-struct propInfo {
-	uint8_t id;
-	uint8_t kind;
-};
+typedef struct {
+	uint32_t address;
+} Prop;
 
-enum extra {
-	HDR_RESERVED = 0x00,
-};
+typedef struct {
+	uint32_t address;
+	uint8_t payloadLength;
+} Header;
 
 #endif // ARDUINOPROPS_H
