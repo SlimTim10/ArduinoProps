@@ -17,9 +17,14 @@ enum {
 	MIFAREULTRALIGHT_USER_PAGE1 = 4,
 };
 
-enum rfid_errno initializeRFID(PN532 *);
-void initializeRFIDs(PN532 **, uint8_t, uint8_t);
-/* (PN532, uint8_t) -> maybe uint8_t */
-maybe readTag(PN532 *, uint8_t);
+typedef struct {
+	PN532 *pn532;
+	uint8_t tagData[MIFAREULTRALIGHT_PAGE_SIZE];
+} RFID;
+
+enum rfid_errno initializeRFID(RFID *, uint8_t);
+enum rfid_errno initializeRFIDs(RFID **, uint8_t, uint8_t);
+/* (PN532, uint8_t) -> maybe uint8_t[] */
+maybe readTag(RFID *, uint8_t);
 
 #endif // ARDUINOPROPS_PN532_H
