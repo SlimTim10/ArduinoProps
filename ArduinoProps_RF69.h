@@ -9,6 +9,8 @@ enum radio_errno {
 	RADIO_ERRNO__SET_FREQ,
 };
 
+typedef RH_RF69 Radio;
+
 enum radio_errno initializeRadio(RH_RF69 *);
 bool matchPayload(Prop *, uint8_t *, uint8_t *, uint8_t);
 bool matchPacket(uint8_t *, uint8_t *, uint8_t);

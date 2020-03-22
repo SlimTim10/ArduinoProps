@@ -17,8 +17,11 @@ enum {
 	MIFAREULTRALIGHT_USER_PAGE1 = 4,
 };
 
+typedef PN532_SPI RFIDHardwareSPI;
+typedef PN532 RFIDHardware;
+
 typedef struct {
-	PN532 *pn532;
+	RFIDHardware *hardware;
 	uint8_t tagData[MIFAREULTRALIGHT_PAGE_SIZE];
 } RFID;
 

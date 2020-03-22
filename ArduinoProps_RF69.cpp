@@ -3,6 +3,7 @@
 #include "ArduinoProps_RF69.h"
 #include "ArduinoProps_RF69_private.h"
 #include <RH_RF69.h>
+#include <SPI.h>
 
 enum rf_settings {
 	RF_POWER = 14,
@@ -16,7 +17,20 @@ enum rf_settings {
 };
 const float RF_FREQ = 915.0;
 
+enum spi_settings {
+	SPI_SPEED = 1000000,
+	SPI_DATA_ORDER = MSBFIRST,
+	SPI_DATA_MODE = SPI_MODE0,
+};
+
+static void configureSPI(void) {
+	SPISettings settings = SPISettings(SPI_SPEED, SPI_DATA_ORDER, SPI_DATA_MODE);
+	SPI.beginTransaction(settings);
+}
+
 enum radio_errno initializeRadio(RH_RF69 *radio) {
+	configureSPI();
+	
 	if (!radio->init()) {
 		return RADIO_ERRNO__INIT;
 	}
@@ -57,8 +71,8 @@ static uint8_t *makePacket(Prop *prop, uint8_t *payload, uint8_t payloadLength) 
 bool matchPayload(Prop *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
 	uint8_t *packet = makePacket(prop, payload, payloadLength);
 	uint8_t packetLength = sizeof(Header) + payloadLength;
-	
-	return (memcmp(recvPacket, packet, packetLength) == 0);
+
+	return matchPacket(recvPacket, packet, packetLength);
 }
 
 bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
@@ -68,12 +82,12 @@ bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
 void sendPayload(RH_RF69 *radio, Prop *prop, uint8_t *payload, uint8_t payloadLength) {
 	uint8_t *packet = makePacket(prop, payload, payloadLength);
 	uint8_t packetLength = sizeof(Header) + payloadLength;
-	
-	radio->send(packet, packetLength);
-	radio->waitPacketSent();
+
+	sendPacket(radio, packet, packetLength);
 }
 
 void sendPacket(RH_RF69 *radio, uint8_t *packet, uint8_t packetLength) {
+	configureSPI();
 	radio->send(packet, packetLength);
 	radio->waitPacketSent();
 }
