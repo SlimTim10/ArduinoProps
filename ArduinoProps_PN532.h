@@ -3,6 +3,7 @@
 
 #include <PN532_SPI.h>
 #include <PN532.h>
+#include <SPI.h>
 
 #include <maybe.h>
 
@@ -17,7 +18,11 @@ enum {
 	MIFAREULTRALIGHT_USER_PAGE1 = 4,
 };
 
-typedef PN532_SPI RFIDHardwareSPI;
+class RFIDHardwareSPI : public PN532_SPI {
+public:
+	RFIDHardwareSPI(uint8_t ss) : PN532_SPI(SPI, ss) {}
+};
+
 typedef PN532 RFIDHardware;
 
 typedef struct {
