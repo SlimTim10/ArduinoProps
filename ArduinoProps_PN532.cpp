@@ -41,18 +41,16 @@ enum rfid_errno initializeRFIDs(RFID **rfids, uint8_t n, uint8_t initAttempts) {
 }
 
 /* (RFID, uint8_t) -> maybe uint8_t[] */
-maybe readTag(RFID *rfid_, uint8_t attempts) {
+maybe readTag(RFID *rfid_, uint8_t timeout) {
 	configureSPI();
 	
 	RFID *rfid = (RFID *) rfid_;
 	
-	for (uint8_t i = 0; i < attempts; i++) {
-		uint8_t val[MIFAREULTRALIGHT_UID_LENGTH];
-		uint8_t uidLength = MIFAREULTRALIGHT_UID_LENGTH;
-		if (rfid->hardware->readPassiveTargetID(PN532_MIFARE_ISO14443A, val, &uidLength)) {
-			if (rfid->hardware->mifareultralight_ReadPage(MIFAREULTRALIGHT_USER_PAGE1, rfid->tagData)) {
-				return mreturn(rfid->tagData);
-			}
+	uint8_t val[MIFAREULTRALIGHT_UID_LENGTH];
+	uint8_t uidLength = MIFAREULTRALIGHT_UID_LENGTH;
+	if (rfid->hardware->readPassiveTargetID(PN532_MIFARE_ISO14443A, val, &uidLength, timeout)) {
+		if (rfid->hardware->mifareultralight_ReadPage(MIFAREULTRALIGHT_USER_PAGE1, rfid->tagData)) {
+			return mreturn(rfid->tagData);
 		}
 	}
 	return nothing();
