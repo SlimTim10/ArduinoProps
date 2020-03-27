@@ -57,11 +57,12 @@ static uint8_t *makePacket(Prop *prop, uint8_t *payload, uint8_t payloadLength) 
 	Header header = { prop->address, payloadLength };
 	size_t headerLength = sizeof(header);
 	
-	uint8_t packet[PACKET_MAX_LENGTH];
+	static uint8_t packet[PACKET_MAX_LENGTH];
 	uint8_t packetLength = headerLength + payloadLength;
 
 	size_t m = sizeof(header.address), n = sizeof(header.payloadLength);
-	memcpy(packet, &header.address, m);
+	uint32_t address = __builtin_bswap32(header.address);
+	memcpy(packet, &address, m);
 	memcpy(&packet[m], &header.payloadLength, n);
 	memcpy(&packet[headerLength], payload, payloadLength);
 
@@ -82,7 +83,7 @@ bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
 void sendPayload(RH_RF69 *radio, Prop *prop, uint8_t *payload, uint8_t payloadLength) {
 	uint8_t *packet = makePacket(prop, payload, payloadLength);
 	uint8_t packetLength = sizeof(Header) + payloadLength;
-
+	
 	sendPacket(radio, packet, packetLength);
 }
 
