@@ -2,7 +2,7 @@
 #define ARDUINOPROPS_CONFIG_H
 
 enum prop_settings {
-	PACKET_MAX_LENGTH = 60,
+	PACKET_MAX_LENGTH = 254,
 };
 
 #endif // ARDUINOPROPS_CONFIG_H
