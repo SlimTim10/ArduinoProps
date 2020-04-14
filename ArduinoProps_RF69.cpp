@@ -4,6 +4,7 @@
 #include "ArduinoProps_RF69_private.h"
 #include <RH_RF69.h>
 #include <SPI.h>
+#include <Arduino.h>
 
 enum rf_settings {
 	RF_POWER = 14,
@@ -53,24 +54,24 @@ enum radio_errno initializeRadio(RH_RF69 *radio) {
 	return RADIO_ERRNO__SUCCESS;
 }
 
-static uint8_t *makePacket(Prop *prop, uint8_t *payload, uint8_t payloadLength) {
-	Header header = { prop->address, payloadLength };
+static uint8_t *makePacket(Prop *prop, CommandID cmd, uint8_t *payload, uint8_t payloadLength) {
+	Header header = { prop->address, cmd };
 	size_t headerLength = sizeof(header);
 	
 	static uint8_t packet[PACKET_MAX_LENGTH];
 	uint8_t packetLength = headerLength + payloadLength;
 
-	size_t m = sizeof(header.address), n = sizeof(header.payloadLength);
+	size_t m = sizeof(header.address), n = sizeof(header.command);
 	uint32_t address = __builtin_bswap32(header.address);
 	memcpy(packet, &address, m);
-	memcpy(&packet[m], &header.payloadLength, n);
+	memcpy(&packet[m], &header.command, n);
 	memcpy(&packet[headerLength], payload, payloadLength);
 
 	return packet;
 }
 
-bool matchPayload(Prop *prop, uint8_t *recvPacket, uint8_t *payload, uint8_t payloadLength) {
-	uint8_t *packet = makePacket(prop, payload, payloadLength);
+bool matchPayload(uint8_t *recvPacket, Prop *prop, CommandID cmd, uint8_t *payload, uint8_t payloadLength) {
+	uint8_t *packet = makePacket(prop, cmd, payload, payloadLength);
 	uint8_t packetLength = sizeof(Header) + payloadLength;
 
 	return matchPacket(recvPacket, packet, packetLength);
@@ -80,8 +81,8 @@ bool matchPacket(uint8_t *recvPacket, uint8_t *packet, uint8_t packetLength) {
 	return (memcmp(recvPacket, packet, packetLength) == 0);
 }
 
-void sendPayload(RH_RF69 *radio, Prop *prop, uint8_t *payload, uint8_t payloadLength) {
-	uint8_t *packet = makePacket(prop, payload, payloadLength);
+void sendPayload(RH_RF69 *radio, Prop *prop, CommandID cmd, uint8_t *payload, uint8_t payloadLength) {
+	uint8_t *packet = makePacket(prop, cmd, payload, payloadLength);
 	uint8_t packetLength = sizeof(Header) + payloadLength;
 	
 	sendPacket(radio, packet, packetLength);
