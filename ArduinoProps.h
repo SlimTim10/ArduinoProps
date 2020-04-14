@@ -4,10 +4,10 @@
 #include <stdint.h>
 
 typedef enum {
-	payloadInt = 0x01,
-	payloadIntList = 0x02,
-	payloadString = 0x03,
-	pingCmd = 0x80,
+	CMD_PAYLOAD_INT = 0x01,
+	CMD_PAYLOAD_INT_LIST = 0x02,
+	CMD_PAYLOAD_STRING = 0x03,
+	CMD_PING = 0x80,
 } CommandID;
 
 typedef struct {
