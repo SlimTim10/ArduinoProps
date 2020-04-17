@@ -16,7 +16,8 @@ typedef struct {
 
 typedef struct {
 	uint32_t address;
-	CommandID command;
+	/* CommandID as uint8_t */
+	uint8_t command;
 } Header;
 
 #endif // ARDUINOPROPS_H
