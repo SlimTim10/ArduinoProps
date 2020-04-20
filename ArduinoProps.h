@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#define die() while (1)
+
 typedef enum {
 	CMD_PAYLOAD_INT = 0x01,
 	CMD_PAYLOAD_INT_LIST = 0x02,
