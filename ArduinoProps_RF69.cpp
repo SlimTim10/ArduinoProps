@@ -1,10 +1,10 @@
 #include "ArduinoProps.h"
-#include "ArduinoProps_config.h"
 #include "ArduinoProps_RF69.h"
 #include "ArduinoProps_RF69_private.h"
 #include <RH_RF69.h>
 #include <SPI.h>
 #include <Arduino.h>
+// #include <maybe.h>
 
 enum rf_settings {
 	RF_POWER = 14,
@@ -89,7 +89,27 @@ void sendPayload(RH_RF69 *radio, Prop *prop, CommandID cmd, uint8_t *payload, ui
 }
 
 void sendPacket(RH_RF69 *radio, uint8_t *packet, uint8_t packetLength) {
+	if (packetLength == 0) return;
+	
 	configureSPI();
 	radio->send(packet, packetLength);
 	radio->waitPacketSent();
+}
+
+/* RH_RF69 -> maybe PacketInfo */
+maybe receivePacket(RH_RF69 *radio) {
+	configureSPI();
+
+	if (!radio->available()) return nothing();
+
+	static uint8_t buf[PACKET_MAX_LENGTH];
+	static PacketInfo packetInfo = {
+		.value = buf,
+	};
+	// The length must be set to the maximum length we want to receive every time
+	packetInfo.length = PACKET_MAX_LENGTH;
+	
+	return (radio->recv(packetInfo.value, &packetInfo.length))
+		? mreturn(&packetInfo)
+		: nothing();
 }

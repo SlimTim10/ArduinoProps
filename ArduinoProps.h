@@ -5,6 +5,10 @@
 
 #define die() while (1)
 
+enum prop_settings {
+	PACKET_MAX_LENGTH = 252,
+};
+
 typedef enum {
 	CMD_PAYLOAD_INT = 0x01,
 	CMD_PAYLOAD_INT_LIST = 0x02,
