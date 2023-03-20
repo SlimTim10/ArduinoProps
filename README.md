@@ -1,6 +1,12 @@
 # Arduino Props Library
 
-Name folder "ArduinoProps" in Arduino/libraries.
+## Description
+
+A library to make "props", meant to communicate wirelessly with the [gateway](https://github.com/SlimTim10/gateway). The props can use various sensors or other inputs, so long as each prop is equipped with an RF69 module for wireless communication.
+
+## Instructions
+
+Copy and name the folder "ArduinoProps" in Arduino/libraries.
 
 ## Dependencies
 
